@@ -1,0 +1,100 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAXLIST 15
+
+typedef float Listdata;
+typedef enum{TRUE,FALSE}Boolean;
+
+typedef struct {
+    Listdata Entry[MAXLIST];
+    int count;
+}List;
+
+void CreateList(List *list){
+    list->count=0;
+}
+
+Boolean isEmpty(List *list){
+    return(list->count==0);
+}
+Boolean isFull(List *list){
+    return(list->count==MAXLIST);
+}
+void insertLast(Listdata x,List *list){
+    if(isFull(list)){
+        printf("Warning: Attempt to insert at the end of a full list\n");
+        exit(1);
+    }else{
+        list->Entry[list->count++]=x;
+    }
+}
+float TraverseList(const List *list){
+    int i;
+    for(i=0;i<list->count;i++){
+        printf("%.2f ",list->Entry[i]);
+
+    }
+    printf("\n");
+}
+void sortList(List *list){
+    int i,j;
+
+    Listdata temp;
+    for(i=0;i<list->count-1;i++){
+        for(j=0;j<list->count-1-i;j++){
+            if(list->Entry[j]<list->Entry[j+1]){
+                    temp=list->Entry[j];
+                    list->Entry[j]=list->Entry[j+1];
+                    list->Entry[j+1]=temp;
+
+
+            }
+        }
+    }
+}
+
+float calculateMean(const List *list,int n){
+    float sum=0.0;
+    for(int i=0;i<n;i++){
+        sum+=list->Entry[i];
+    }
+    return (sum/n);
+}
+
+float calculateVariance(List *list,int n, float mean){
+    float sum=0.0;
+    for(int i=0; i<n; i++){
+        sum+=(list->Entry[i]-mean)*(list->Entry[i]-mean);
+    }
+    return(sum/n);
+}
+
+int main(){
+    List myList;
+    CreateList(&myList);
+
+    printf("Enter 10 real numbers: \n");
+    for(int i=0;i<10;i++){
+        float num;
+        scanf("%f",&num);
+        insertLast(num,&myList);
+    }
+    sortList(&myList);
+
+    printf("Sorted list: ");
+    TraverseList(&myList);
+
+
+
+
+    int n=4;
+    float mean = calculateMean(&myList,n);
+    printf("Mean of the first 4 numbers: %.2f\n", mean);
+
+    float variance= calculateVariance(&myList,n,mean);
+    printf("Variance  of the first 4 numbers: %.2f\n", variance);
+
+
+   return 0;
+}

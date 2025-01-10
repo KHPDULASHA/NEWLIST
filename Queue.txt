@@ -1,0 +1,129 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAXSIZE 10
+
+typedef float queueElement;
+typedef float listElement;
+
+typedef enum {TRUE,FALSE}Boolean;
+
+typedef struct{
+    queueElement items[MAXSIZE];
+    int front;
+    int rear;
+    int count;
+}Queue;
+
+typedef struct {
+    listElement entry[MAXSIZE];
+    int count;
+}List;
+
+void createQueue(Queue *q){
+    q->front=0;
+    q->rear=-1;
+    q->count =0;
+}
+Boolean isEmpty(Queue *q){
+    return(q->rear<q->front);
+}
+Boolean isFull(Queue *q){
+    return(q->rear==MAXSIZE-1);
+}
+
+void appendQ(queueElement x, Queue *q){
+    if(isFull(q)){
+        printf("Stack is full");
+        exit(1);
+    }else{
+        q->items[++(q->rear)]=x;
+        q->count++;
+        }
+}
+
+void serveQ(listElement *x,Queue *q) {
+    if (isEmpty(q)) {
+        printf("Queue is empty\n");
+        exit(2);
+    } else {
+
+        *x=q->item[(q->front)++];
+        q->count--;
+
+    }
+}
+
+void createList(List *l){
+    l->count=0;
+}
+Boolean isFullList(List *l){
+    return (l->count==MAXSIZE);
+}
+
+void insertLast(listElement x,List*l){
+    if(isFullList(l)){
+        printf("List is Full:");
+        exit(3);
+    }else{
+        l->entry[(l->count)++]=x;
+        l->count++;
+    }
+
+}
+
+void displayList(List *l){
+    for(int i=0; i<l->count;i++){
+        printf("%.2f",l->entry[i]);
+    }
+    printf("\n");
+}
+
+void bubblesort(List *l){
+    listElement temp;
+    for(int i=0;i<l->count-1;i++){
+        for(int j=0;j<l->count-1-i;j++){
+            if(l->entry[j]>l->entry[j+1]){
+               temp= l->entry[j];
+               l->entry[j] =l->entry[j+1];
+               l->entry[j+1]=temp;
+            }
+        }
+    }
+}
+
+/*float ComputeMean(const List *l, int n) {
+    float sum = 0.0;
+    for (int i = l->count - n; i < l->count; i++) {
+        sum += l->entry[i];
+    }
+    return sum / n;
+}*/
+
+int main(){
+    Queue myq;
+    queueElement x;
+    createQueue(&myq);
+    float numbers[]={3.8,5.3,0.8,100.4,51.9,43.5,1000.4,8.9};
+    for(int i=0;i<8;i++){
+        appendQ(numbers[i],&myq);
+    }
+
+    List myl;
+    listElement y;
+    createList(&myl);
+
+    for(int i=0; i<myq.count; ++i){
+        serveQ(&x,&myq);
+        insertLast(x,&myl);
+    }
+    bubblesort(&myl);
+    printf("sorted list : \n");
+    displayList(&myl);
+
+    /*float mean = ComputeMean(&myl, 4);
+    printf("Mean of the largest 4 numbers: %.2f\n", mean);*/
+
+
+return 0;
+}
