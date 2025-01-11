@@ -1,0 +1,161 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAXQUEUE 10
+#define MAXLIST 10
+
+#define FALSE 0
+#define TRUE 1
+
+typedef float QueueElement;
+
+typedef float ListEntry;
+
+typedef struct queue
+{
+    QueueElement entry[MAXQUEUE];
+    int front;
+    int rear;
+    int count;
+} Queue;
+
+typedef struct
+{
+    ListEntry entry[MAXLIST];
+    int count;
+}List;
+
+void CreateQueue(Queue *q)
+{
+    q->front=0;
+    q->rear=-1;
+    q->count=0;
+}
+
+int IsQueueEmpty(const Queue *q)
+{
+    if(q->rear<q->front)
+        return(TRUE);
+    else
+        return(FALSE);
+}
+
+int IsQueueFull(Queue *q)
+{
+    if(q->rear==MAXQUEUE-1)
+        return(TRUE);
+    else
+        return(FALSE);
+}
+
+void Append(Queue *q,QueueElement x)
+{
+    if(IsQueueFull(q))
+    {
+        printf("Queue is full.\n");
+        exit(1);
+    }
+    else
+    {
+        q->entry[++(q->rear)]=x;
+        q->count++;
+    }
+}
+
+float Serve(Queue *q)
+{
+    if(IsQueueEmpty(q))
+    {
+        printf("Queue is Empty.\n");
+        exit(1);
+    }
+    else
+    {
+        float x = q->entry[(q->front)++];
+        q->count--;
+        return x;
+    }
+}
+
+void CreateList(List *l)
+{
+    l->count=0;
+}
+
+void InsertList(ListEntry x,List *l)
+{
+    if(l->count>=MAXLIST)
+    {
+        printf("List Overflow\n");
+        exit(1);
+    }
+    l->entry[l->count++] = x;
+}
+
+void DisplayList(const List *l)
+{
+    for(int i=0;i<l->count;i++)
+    {
+        printf("%.2f ",l->entry[i]);
+    }
+    printf("\n");
+}
+
+void BubbleSort(List *l)
+{
+    for(int i=0;i<l->count-1;i++)
+    {
+        for (int j = 0; j < l->count - i - 1; j++)
+        {
+            if(l->entry[j+1]<l->entry[j])
+            {
+                ListEntry temp = l->entry[j];
+                l->entry[j]=l->entry[j+1];
+                l->entry[j+1]=temp;
+            }
+        }
+    }
+}
+
+float ComputeMean(const List *l, int n) {
+    float sum = 0.0;
+    for (int i = l->count - n; i < l->count; i++)
+    {
+        sum += l->entry[i];
+    }
+    return sum / n;
+}
+
+int main()
+{
+    Queue Q;
+    CreateQueue(&Q);
+    int n;
+
+    printf("Enter the numbers of the queue: \n");
+
+    for(int i=0;i<8;i++)
+    {
+        float num;
+        scanf("%f",&num);
+        Append(&Q,num);
+    }
+
+    List L;
+    CreateList(&L);
+    while (!IsQueueEmpty(&Q))
+    {
+        float item = Serve(&Q);
+        InsertList(item, &L);
+    }
+
+    BubbleSort(&L);
+
+    printf("Sorted List: \n");
+    DisplayList(&L);
+
+    float mean = ComputeMean(&L, 4);
+    printf("Mean of the largest 4 numbers: %.2f\n", mean);
+
+    return 0;
+}
